@@ -34,7 +34,6 @@ bool Dijkstra::plan() {
   while (!priority_queue.empty()) { // Keep going until priority queue is empty, or until goal is found (by breaking out)
     int index = priority_queue.top().second; // Get the closest index value
     priority_queue.pop(); // Remove the item from priority_queue
-    int width = static_cast<int>(width_);
     
     std::array<std::pair<int, int>, 8> offsets; 
     offsets[0] = std::make_pair(-1,1);
@@ -53,7 +52,7 @@ bool Dijkstra::plan() {
       int x = current_x + offsets.at(offset_index).first;
       int y = current_y + offsets.at(offset_index).second;
 
-      if (x < 0 || x >= width_ || y < 0 || y >= height_) {
+      if (x < 0 || x >= static_cast<int>(width_) || y < 0 || y >= static_cast<int>(height_)) {
         continue;
       }
 
