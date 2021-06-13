@@ -53,17 +53,19 @@ void Viewer::update(Path &path) {
 
 void Viewer::drawPath(cv::Mat &image, Path &path) {
 
-  for(size_t index = 0; index < path.getSize() - 1; ++index) {
-    Waypoint point1 = path.getWaypoint(index);
-    Waypoint point2 = path.getWaypoint(index + 1);
+  if (path.getSize()) {
+    for(size_t index = 0; index < path.getSize() - 1; ++index) {
+      Waypoint point1 = path.getWaypoint(index);
+      Waypoint point2 = path.getWaypoint(index + 1);
 
-    size_t offset = raster_size_ / 2;
-    size_t index_x1 = point1.x * raster_size_ + offset;
-    size_t index_y1 = point1.y * raster_size_ + offset;
-    size_t index_x2 = point2.x * raster_size_ + offset;
-    size_t index_y2 = point2.y * raster_size_ + offset;
+      size_t offset = raster_size_ / 2;
+      size_t index_x1 = point1.x * raster_size_ + offset;
+      size_t index_y1 = point1.y * raster_size_ + offset;
+      size_t index_x2 = point2.x * raster_size_ + offset;
+      size_t index_y2 = point2.y * raster_size_ + offset;
 
-    cv::line(image, cv::Point(index_x1, index_y1), cv::Point(index_x2, index_y2), cv::Scalar(0, 255, 0), 3);
+      cv::line(image, cv::Point(index_x1, index_y1), cv::Point(index_x2, index_y2), cv::Scalar(0, 255, 0), 3);
+    }
   }
 
 }
