@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_set> 
 #include "planner/path.h"
+#include <sstream>
 
 struct MouseEvent {
   size_t x = 0;
@@ -28,6 +29,8 @@ class Viewer {
   bool goal_set_{false};
   size_t start_index_, goal_index_;
 
+  float dijkstra_time_{0.0};
+
 public:
   Viewer(const size_t height = 800, const size_t width = 800, const size_t raster_size = 10);
   void update(Path &path);
@@ -35,6 +38,7 @@ public:
   void setStartPosition(const size_t x, const size_t y);
   void setGoalPosition(const size_t x, const size_t y);
   bool isWall(const size_t x, const size_t y);
+  void setDijkstraTime(const float time);
   
   inline size_t getWidth() {
     return width_;

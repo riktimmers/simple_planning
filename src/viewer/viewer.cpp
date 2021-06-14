@@ -27,6 +27,11 @@ void Viewer::drawText(cv::Mat &image) {
   cv::putText(image, "- 'g' to set goal location", cv::Point(width_ + x_offset, y_offset*4), 
               font, font_scale, font_color);
 
+  std::stringstream ss; 
+  ss << "Dijkstra planning time: " << dijkstra_time_ << "us";
+  std::cout << "Dijkstra time: " << dijkstra_time_ << "\n";
+  cv::putText(image, ss.str(), cv::Point(width_ + x_offset, y_offset*5), 
+              font, font_scale, font_color);
 }
 
 bool Viewer::isWall(const size_t x, const size_t y) {
@@ -58,6 +63,10 @@ void Viewer::drawStartAndGoal(cv::Mat &image) {
 
     cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(0, 0, 255), -1);
   }
+}
+
+void Viewer::setDijkstraTime(const float time) {
+  dijkstra_time_ = time;
 }
 
 void Viewer::updateWalls(const MouseEvent &mouse_event) {
@@ -108,6 +117,7 @@ void Viewer::update(Path &path) {
   MouseEvent mouse_event = getMouseEvent();
   updateWalls(mouse_event);
 
+  drawText(field);
   drawStartAndGoal(field);
   drawRaster(field);
   drawWalls(field);
