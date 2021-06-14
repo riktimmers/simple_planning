@@ -37,13 +37,13 @@ bool Dijkstra::plan() {
     
     std::array<std::pair<int, int>, 8> offsets; 
     offsets[0] = std::make_pair(-1,1);
-    offsets[2] = std::make_pair(1, 1);
-    offsets[5] = std::make_pair(-1, -1);
-    offsets[7] = std::make_pair(1, -1);
-    offsets[1] = std::make_pair(0, 1);
-    offsets[3] = std::make_pair(-1, 0);
-    offsets[4] = std::make_pair(1, 0);
-    offsets[6] = std::make_pair(0, -1);
+    offsets[1] = std::make_pair(1, 1);
+    offsets[2] = std::make_pair(-1, -1);
+    offsets[3] = std::make_pair(1, -1);
+    offsets[4] = std::make_pair(0, 1);
+    offsets[5] = std::make_pair(-1, 0);
+    offsets[6] = std::make_pair(1, 0);
+    offsets[7] = std::make_pair(0, -1);
     
     size_t current_x, current_y;
     toCoordinate(index, current_x, current_y); 
@@ -63,27 +63,23 @@ bool Dijkstra::plan() {
           walls_.count(adjecent_index) == 0 &&
           distances.at(index) + distance < distances.at(adjecent_index)) {
             
-          if (offset_index < 4) {
-            switch(offset_index) { // Check diagonal walls
-              case 0: 
-                if (walls_.count(toIndex(current_x - 1, current_y)) || walls_.count(toIndex(current_x, current_y - 1))) {
-                  continue;
-                }
-              case 1:
-                if (walls_.count(toIndex(current_x, current_y - 1)) || walls_.count(toIndex(current_x + 1, current_y))) {
-                  continue;
-                }
-              case 2:
-                if (walls_.count(toIndex(current_x - 1, current_y)) || walls_.count(toIndex(current_x, current_y + 1))) {
-                  continue;
-                }
-              case 3:
-                if (walls_.count(toIndex(current_x, current_y + 1)) || walls_.count(toIndex(current_x + 1, current_y + 1))) {
-                  continue;
-                }
- 
-
-            }
+          switch(offset_index) { // Check diagonal walls
+            case 0: 
+              if (walls_.count(toIndex(current_x - 1, current_y)) || walls_.count(toIndex(current_x, current_y + 1))) {
+                continue;
+              }
+            case 1:
+              if (walls_.count(toIndex(current_x, current_y + 1)) || walls_.count(toIndex(current_x + 1, current_y))) {
+                continue;
+              }
+            case 2:
+              if (walls_.count(toIndex(current_x - 1, current_y)) || walls_.count(toIndex(current_x, current_y - 1))) {
+                continue;
+              }
+            case 3:
+              if (walls_.count(toIndex(current_x, current_y - 1)) || walls_.count(toIndex(current_x + 1, current_y - 1))) {
+                continue;
+              }
           } // check if diagonal is wall as well 
         distances.at(adjecent_index) = distances.at(index) + distance;
         priority_queue.emplace(std::make_pair(distances.at(adjecent_index), adjecent_index));

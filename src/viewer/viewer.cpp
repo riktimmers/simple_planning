@@ -4,7 +4,7 @@ Viewer::Viewer(const size_t height, const size_t width, const size_t raster_size
   height_(height), 
   width_(width), 
   raster_size_(raster_size),
-  board_(height_, width_, CV_8UC3, cv::Scalar(255, 255, 255)) {
+  board_(height_, width_ + 400, CV_8UC3, cv::Scalar(255, 255, 255)) {
 
   cv::namedWindow(board_name_);
   cv::setMouseCallback(board_name_, mouseHandler, (void*)&mouse_event_);		
@@ -22,8 +22,10 @@ void Viewer::updateWalls(const MouseEvent &mouse_event) {
 }
 
 void Viewer::addWall(const MouseEvent &mouse_event) {
-  const size_t index = getIndex(mouse_event.x, mouse_event.y);
-  walls_.insert(index);
+  if (mouse_event.x < width_) {
+    const size_t index = getIndex(mouse_event.x, mouse_event.y);
+    walls_.insert(index);
+  }
 }
 
 const size_t Viewer::getIndex(const size_t x, const size_t y) {
@@ -73,7 +75,7 @@ void Viewer::drawPath(cv::Mat &image, Path &path) {
 void Viewer::drawRaster(cv::Mat &image) {
   const cv::Scalar black(0, 0, 0); 
 
-  for (size_t raster = raster_size_; raster < width_; raster += raster_size_) {
+  for (size_t raster = raster_size_; raster <= width_; raster += raster_size_) {
     cv::line(image, cv::Point(raster, 0), cv::Point(raster, height_), black); 
   }
 
