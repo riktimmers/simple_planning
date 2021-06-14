@@ -4,10 +4,60 @@ Viewer::Viewer(const size_t height, const size_t width, const size_t raster_size
   height_(height), 
   width_(width), 
   raster_size_(raster_size),
-  board_(height_, width_ + 400, CV_8UC3, cv::Scalar(255, 255, 255)) {
+  board_(height_, width_ + text_offset_, CV_8UC3, cv::Scalar(255, 255, 255)) {
 
   cv::namedWindow(board_name_);
+  drawText(board_);
   cv::setMouseCallback(board_name_, mouseHandler, (void*)&mouse_event_);		
+}
+
+void Viewer::drawText(cv::Mat &image) {
+  cv::rectangle(image, cv::Rect(width_, 0, text_offset_, height_), cv::Scalar(50, 0, 20), -1);
+  size_t x_offset = 20;
+  size_t y_offset = 20;
+  float font_scale = 1.2;
+  cv::Scalar font_color(0, 255, 0);
+  int font = cv::FONT_HERSHEY_PLAIN;
+  cv::putText(image, "- Left mouse button to add wall", cv::Point(width_ + x_offset, y_offset),
+              font, font_scale, font_color);
+  cv::putText(image, "- Right mouse button to remove wall", cv::Point(width_ + x_offset, y_offset*2), 
+              font, font_scale, font_color);
+  cv::putText(image, "- 's' to set start location", cv::Point(width_ + x_offset, y_offset*3), 
+              font, font_scale, font_color);
+  cv::putText(image, "- 'g' to set goal location", cv::Point(width_ + x_offset, y_offset*4), 
+              font, font_scale, font_color);
+
+}
+
+bool Viewer::isWall(const size_t x, const size_t y) {
+  return walls_.count(getIndex(x, y)) > 0; 
+}
+
+void Viewer::setStartPosition(const size_t x, const size_t y) {
+  start_index_ = getIndex(x, y);
+  start_set_ = true;
+
+}
+
+void Viewer::setGoalPosition(const size_t x, const size_t y) {
+  goal_index_ = getIndex(x, y);
+  goal_set_ = true;
+}
+
+void Viewer::drawStartAndGoal(cv::Mat &image) {
+  if (start_set_) {
+    const	size_t x = (start_index_ * raster_size_) % width_ ;
+    const size_t y = std::floor((start_index_ / (width_/raster_size_)) * raster_size_);
+
+    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(255, 0, 0), -1);
+  }
+
+  if (goal_set_) {
+    const	size_t x = (goal_index_ * raster_size_) % width_ ;
+    const size_t y = std::floor((goal_index_ / (width_/raster_size_)) * raster_size_);
+
+    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(0, 0, 255), -1);
+  }
 }
 
 void Viewer::updateWalls(const MouseEvent &mouse_event) {
@@ -24,6 +74,18 @@ void Viewer::updateWalls(const MouseEvent &mouse_event) {
 void Viewer::addWall(const MouseEvent &mouse_event) {
   if (mouse_event.x < width_) {
     const size_t index = getIndex(mouse_event.x, mouse_event.y);
+
+    if (start_set_) {
+      if (index == start_index_) {
+        return;
+      }
+    }
+
+    if (goal_set_) {
+      if (index == goal_index_) {
+        return;
+      }
+    }
     walls_.insert(index);
   }
 }
@@ -45,7 +107,8 @@ void Viewer::update(Path &path) {
   board_.copyTo(field);
   MouseEvent mouse_event = getMouseEvent();
   updateWalls(mouse_event);
-  
+
+  drawStartAndGoal(field);
   drawRaster(field);
   drawWalls(field);
   drawPath(field, path);
@@ -87,9 +150,9 @@ void Viewer::drawRaster(cv::Mat &image) {
 void Viewer::drawWalls(cv::Mat &image) {
   
   for (auto &index: walls_) {
-    const	size_t index_x = (index * raster_size_) % width_ ;
-    const size_t index_y = std::floor((index / (width_/raster_size_)) * raster_size_);
-    cv::rectangle(image, cv::Rect(index_x, index_y, raster_size_, raster_size_), cv::Scalar(0, 0, 0), -1);
+    const	size_t x = (index * raster_size_) % width_ ;
+    const size_t y = std::floor((index / (width_/raster_size_)) * raster_size_);
+    cv::rectangle(image, cv::Rect(x, y, raster_size_, raster_size_), cv::Scalar(0, 0, 0), -1);
   }
 }
 

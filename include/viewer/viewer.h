@@ -13,20 +13,20 @@ struct MouseEvent {
   bool right_click = false;
 };
 
-struct Point {
-  size_t x;
-  size_t y;
-};
-
 class Viewer {
 
   const size_t height_; 
   const size_t width_;
   const size_t raster_size_;
   const std::string board_name_{"Planning Demo"};
+  const size_t text_offset_{450};
   cv::Mat board_;
   MouseEvent mouse_event_;
   std::unordered_set<size_t> walls_;
+
+  bool start_set_{false};
+  bool goal_set_{false};
+  size_t start_index_, goal_index_;
 
 public:
   Viewer(const size_t height = 800, const size_t width = 800, const size_t raster_size = 10);
@@ -42,8 +42,13 @@ public:
   }
 
   MouseEvent getMouseEvent();
+  void setStartPosition(const size_t x, const size_t y);
+  void setGoalPosition(const size_t x, const size_t y);
+  bool isWall(const size_t x, const size_t y);
 
 private:
+  void drawText(cv::Mat &image);
+  void drawStartAndGoal(cv::Mat &image);
   void updateWalls(const MouseEvent &mouse_event);
   void removeWall(const MouseEvent &index);
   void addWall(const MouseEvent &index);
