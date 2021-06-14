@@ -30,21 +30,19 @@ class Viewer {
 
 public:
   Viewer(const size_t height = 800, const size_t width = 800, const size_t raster_size = 10);
+  void update(Path &path);
+  MouseEvent getMouseEvent();
+  void setStartPosition(const size_t x, const size_t y);
+  void setGoalPosition(const size_t x, const size_t y);
+  bool isWall(const size_t x, const size_t y);
   
   inline size_t getWidth() {
     return width_;
   } 
 
-  void update(Path &path);
-
   inline std::unordered_set<size_t> getWalls() {
     return walls_;
   }
-
-  MouseEvent getMouseEvent();
-  void setStartPosition(const size_t x, const size_t y);
-  void setGoalPosition(const size_t x, const size_t y);
-  bool isWall(const size_t x, const size_t y);
 
 private:
   void drawText(cv::Mat &image);

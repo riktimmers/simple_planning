@@ -9,10 +9,11 @@ int main(int argc, char **argv) {
   Viewer viewer(height, width, raster_width);
   Dijkstra dijkstra(height/raster_width, width/raster_width);
   Path path;
-  size_t start_x = 0;
-  size_t start_y = 0;
-  size_t goal_x = width - 1;
-  size_t goal_y = height - 1;
+
+  const size_t start_x = 0;
+  const size_t start_y = 0;
+  const size_t goal_x = width - 1;
+  const size_t goal_y = height - 1;
   dijkstra.setStartPoint(start_x / raster_width, start_y / raster_width);
   viewer.setStartPosition(start_x, start_y);
   dijkstra.setGoalPoint(goal_x / raster_width - 1, goal_y / raster_width - 1);
@@ -26,6 +27,7 @@ int main(int argc, char **argv) {
     if (dijkstra.plan()) {
       path = dijkstra.getPath();
     }
+
     viewer.update(path);
 
     if (key == 'q') {
