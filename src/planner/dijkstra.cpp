@@ -4,11 +4,20 @@ Dijkstra::Dijkstra(size_t height, size_t width) : BasePlanner(height, width) {
 }
 
 void Dijkstra::setStartPoint(size_t x, size_t y) {
+  
+  if (x > width_) {
+    return;
+  }
+
   start_point_.x = x;
   start_point_.y = y;
 }
 
 void Dijkstra::setGoalPoint(size_t x, size_t y) {
+  
+  if (x > width_) {
+    return;
+  }
   goal_point_.x = x;
   goal_point_.y = y;
 }

@@ -1,6 +1,5 @@
 #include "viewer/viewer.h"
 #include "planner/dijkstra.h"
-#include "timing/timing.h"
 
 int main(int argc, char **argv) {
   const size_t height = 800;
@@ -17,25 +16,19 @@ int main(int argc, char **argv) {
   const size_t goal_y = height - 1;
   dijkstra.setStartPoint(start_x / raster_width, start_y / raster_width);
   viewer.setStartPosition(start_x, start_y);
-  dijkstra.setGoalPoint(goal_x / raster_width - 1, goal_y / raster_width - 1);
+  dijkstra.setGoalPoint(goal_x / raster_width, goal_y / raster_width);
   viewer.setGoalPosition(goal_x, goal_y);
 
-  Timing timing1;
-
-  while (true) {
+   while (true) {
     char key = cv::waitKey(1);
-    path.clear();
     dijkstra.createOccupancyMap(viewer.getWalls());
-
-    timing1.start();
+    path.clear();
     bool found_plan = dijkstra.plan();
-    timing1.stop();
+    
     if (found_plan) {
       path = dijkstra.getPath();
     }
 
-    std::cout << timing1.duration() << "\n";
-    viewer.setDijkstraTime(timing1.duration());
     viewer.update(path);
 
     if (key == 'q') {

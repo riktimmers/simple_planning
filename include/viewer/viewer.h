@@ -38,7 +38,6 @@ public:
   void setStartPosition(const size_t x, const size_t y);
   void setGoalPosition(const size_t x, const size_t y);
   bool isWall(const size_t x, const size_t y);
-  void setDijkstraTime(const float time);
   
   inline size_t getWidth() {
     return width_;
