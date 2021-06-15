@@ -2,10 +2,8 @@
 #define _H_VIEWER__
 
 #include <opencv2/opencv.hpp>
-#include <vector>
 #include <unordered_set> 
 #include "planner/path.h"
-#include <sstream>
 
 struct MouseEvent {
   size_t x = 0;
@@ -28,8 +26,6 @@ class Viewer {
   bool start_set_{false};
   bool goal_set_{false};
   size_t start_index_, goal_index_;
-
-  float dijkstra_time_{0.0};
 
 public:
   Viewer(const size_t height = 800, const size_t width = 800, const size_t raster_size = 10);

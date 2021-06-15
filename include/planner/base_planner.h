@@ -4,7 +4,6 @@
 #include "planner/path.h"
 #include <unordered_set>
 #include <math.h>
-#include <vector>
 
 class BasePlanner {
 
