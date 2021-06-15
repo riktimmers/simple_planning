@@ -4,13 +4,12 @@
 #include "planner/path.h"
 #include <unordered_set>
 #include <math.h>
-#include <unordered_set>
 #include <vector>
 
 class BasePlanner {
 
 public:
-  BasePlanner(size_t height, size_t width) :
+  BasePlanner(const size_t height, const size_t width) :
     height_(height),
     width_(width) {
  };
@@ -46,8 +45,8 @@ protected:
   Waypoint start_point_;
   Waypoint goal_point_;
   Path path_;
-  size_t height_;
-  size_t width_;
+  const size_t height_;
+  const size_t width_;
   std::unordered_set<size_t> walls_;
 };
 
