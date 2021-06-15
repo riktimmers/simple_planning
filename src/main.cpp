@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
       }
     } else if (key == 'g') {
       MouseEvent mouse_event = viewer.getMouseEvent();
-
+      
       if (!viewer.isWall(mouse_event.x, mouse_event.y)) {
         dijkstra.setGoalPoint(std::floor(mouse_event.x / raster_width), std::floor(mouse_event.y / raster_width));
         viewer.setGoalPosition(mouse_event.x, mouse_event.y);

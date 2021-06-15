@@ -58,7 +58,7 @@ void Viewer::drawStartAndGoal(cv::Mat &image) {
     const	size_t x = (start_index_ * raster_size_) % width_ ;
     const size_t y = std::floor((start_index_ / (width_/raster_size_)) * raster_size_);
 
-    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(255, 0, 0), -1);
+    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(220, 0, 0), -1);
   }
 
   if (goal_set_) {

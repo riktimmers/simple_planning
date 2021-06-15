@@ -108,6 +108,10 @@ bool Dijkstra::plan() {
     std::vector<size_t> path;
     path.reserve(previous.size());
     size_t index = goal_index;
+
+    if (goal_index == start_index) { // When mouse hasn't moved, goal becomes 0 as well
+      return false;
+    }
     
     while(previous.at(index)  != start_index) {
       path.push_back(index);
