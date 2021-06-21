@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <unordered_set> 
+#include <array>
 #include "planner/path.h"
 
 struct MouseEvent {
@@ -19,6 +20,8 @@ class Viewer {
   const size_t raster_size_;
   const std::string board_name_{"Planning Demo"};
   const size_t text_offset_{450};
+
+  std::array<std::string, 6> text_;
   cv::Mat board_;
   MouseEvent mouse_event_;
   std::unordered_set<size_t> walls_;
@@ -60,6 +63,7 @@ private:
   void drawWalls(cv::Mat &image);
   const size_t getIndex(const size_t x, const size_t y);
   static void mouseHandler(int event, int x,int y, int flags, void *mouse_event);
+  void addText(cv::Mat &image, const std::string text, const size_t line_nr = 1);
 
 };
 

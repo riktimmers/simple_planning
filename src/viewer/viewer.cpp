@@ -6,6 +6,13 @@ Viewer::Viewer(const size_t height, const size_t width, const size_t raster_size
   raster_size_(raster_size),
   board_(height_, width_ + text_offset_, CV_8UC3, cv::Scalar(255, 255, 255)) {
 
+  text_[0] = "- Left mouse button to add wall";
+  text_[1] = "- Right mouse button to remove wall";
+  text_[2] = "- 's' to set start location";
+  text_[3] = "- 'g' to set goal location";
+  text_[4] = "- Green path: Dijkstra";
+  text_[5] = "- Blue path: A*";
+
   cv::namedWindow(board_name_);
   drawText(board_);
   cv::setMouseCallback(board_name_, mouseHandler, (void*)&mouse_event_);		
@@ -21,20 +28,20 @@ void Viewer::setAStarPath(const Path &path) {
 
 void Viewer::drawText(cv::Mat &image) {
   cv::rectangle(image, cv::Rect(width_, 0, text_offset_, height_), cv::Scalar(50, 0, 20), -1);
-  size_t x_offset = 20;
-  size_t y_offset = 20;
-  float font_scale = 1.2;
-  cv::Scalar font_color(0, 255, 0);
-  int font = cv::FONT_HERSHEY_PLAIN;
-  cv::putText(image, "- Left mouse button to add wall", cv::Point(width_ + x_offset, y_offset),
-              font, font_scale, font_color);
-  cv::putText(image, "- Right mouse button to remove wall", cv::Point(width_ + x_offset, y_offset*2), 
-              font, font_scale, font_color);
-  cv::putText(image, "- 's' to set start location", cv::Point(width_ + x_offset, y_offset*3), 
-              font, font_scale, font_color);
-  cv::putText(image, "- 'g' to set goal location", cv::Point(width_ + x_offset, y_offset*4), 
-              font, font_scale, font_color);
 
+  for (size_t index = 0; index < text_.size(); ++index) {
+    addText(image, text_.at(index), index + 1);
+  }
+}
+
+void Viewer::addText(cv::Mat &image, const std::string text, const size_t line_nr) {
+  const size_t x_offset = 20;
+  const size_t y_offset = 20 * line_nr;
+  const float font_scale = 1.2;
+  const cv::Scalar font_color(0, 255, 0);
+  const int font = cv::FONT_HERSHEY_PLAIN;
+
+  cv::putText(image, text, cv::Point(width_ + x_offset, y_offset), font, font_scale, font_color);
 }
 
 bool Viewer::isWall(const size_t x, const size_t y) {
