@@ -1,24 +1,27 @@
-#include "planner/dijkstra.h"
+#include "planner/a_star.h"
+#include <iostream>
 
-Dijkstra::Dijkstra(const size_t height, const size_t width) : BasePlanner(height, width) {
+AStar::AStar(const size_t height, const size_t width) : BasePlanner(height, width) {
 }
 
-bool Dijkstra::plan() {
+bool AStar::plan() {
   path_.clear();
   const size_t map_size = height_ * width_;
   std::vector<bool> unvisited_set(map_size, true);
   std::vector<float> distances(map_size, std::numeric_limits<float>::infinity());
-  std::vector<size_t> previous(map_size, std::numeric_limits<size_t>::max());
+  std::vector<size_t> previous(map_size, std::numeric_limits<size_t>::max()); 
   std::priority_queue<std::pair<float, size_t>,
-                     std::vector<std::pair<float, size_t>>,
-                     std::greater<std::pair<float, size_t>>> priority_queue;
-  
+                      std::vector<std::pair<float, size_t>>,
+                      std::greater<std::pair<float, size_t>>> priority_queue;
+
   const size_t start_index = toIndex(start_point_.x, start_point_.y);
   const size_t goal_index = toIndex(goal_point_.x, goal_point_.y);
-  // Set initial params 
+
   unvisited_set.at(start_index) = false;
   distances.at(start_index) = 0;
-  priority_queue.emplace(std::make_pair(0, start_index));
+
+  float distance = std::sqrt(std::pow(start_point_.x - goal_point_.x, 2) + std::pow(start_point_.y - goal_point_.y, 2));
+  priority_queue.emplace(std::make_pair(distance, start_index));
   bool found_plan = false;
 
   const std::array<std::pair<const int, const int>, 8> offsets = { 
@@ -31,15 +34,15 @@ bool Dijkstra::plan() {
     std::make_pair(1, 0),
     std::make_pair(0, -1) 
   };
-  
-  while (!priority_queue.empty()) { // Keep going until priority queue is empty, or until goal is found (by breaking out)
-    const size_t index = priority_queue.top().second; // Get the closest index value
-    priority_queue.pop(); // Remove the item from priority_queue
-    
-    size_t current_x, current_y;
-    toCoordinate(index, current_x, current_y); 
 
-    for (size_t offset_index = 0; offset_index < offsets.size(); ++offset_index) { 
+  while (!priority_queue.empty()) {
+    const size_t index = priority_queue.top().second;
+    priority_queue.pop();
+
+    size_t current_x, current_y;
+    toCoordinate(index, current_x, current_y);
+
+    for (size_t offset_index = 0; offset_index < offsets.size(); ++offset_index) {
       const int x = current_x + offsets.at(offset_index).first;
       const int y = current_y + offsets.at(offset_index).second;
 
@@ -47,12 +50,13 @@ bool Dijkstra::plan() {
         continue;
       }
 
-      const size_t adjacent_index = toIndex(x, y);      
-      const float distance = std::sqrt(std::pow(x - current_x, 2) + std::pow(y - current_y, 2));  
+      const size_t adjacent_index = toIndex(x, y);
+      //distance = std::sqrt(std::pow(x - current_x, 2) + std::pow(y - current_y, 2));
+      distance = std::fabs(x - current_x) + std::fabs(y - current_y);
 
-      if (unvisited_set.at(adjacent_index) == true && 
-        walls_.count(adjacent_index) == 0 &&
-        distances.at(index) + distance < distances.at(adjacent_index)) {
+      //if (unvisited_set.at(adjacent_index) == true && 
+      if (walls_.count(adjacent_index) == 0 &&
+          distances.at(index) + distance < distances.at(adjacent_index)) {
           
         switch(offset_index) { // Check diagonal walls
           case 0: 
@@ -72,21 +76,23 @@ bool Dijkstra::plan() {
               continue;
             }
         } // check if diagonal is wall as well 
-        
-        distances.at(adjacent_index) = distances.at(index) + distance;
-        priority_queue.emplace(std::make_pair(distances.at(adjacent_index), adjacent_index));
+
         previous.at(adjacent_index) = index;
-      } 
+        distances.at(adjacent_index) = distances.at(index) + distance;
+        distance = distances.at(adjacent_index) + std::sqrt(std::pow(x - goal_point_.x, 2) + std::pow(y - goal_point_.y, 2)); 
+        distance = distances.at(adjacent_index) + (std::fabs(goal_point_.x - x) + std::fabs(goal_point_.y - y));
+        priority_queue.emplace(std::make_pair(distance, adjacent_index));
+      }
     }
 
-    unvisited_set.at(index) = false;
-    
+    //unvisited_set.at(index) = false;
+
     if (index == goal_index) {
       found_plan = true;
-      break;  
+      break;
     }
   }
-
+ 
   if (found_plan) {
     std::vector<size_t> path;
     path.reserve(previous.size());

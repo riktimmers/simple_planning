@@ -31,13 +31,33 @@ public:
     path_.addWaypoint(waypoint);
   }
 
-  inline size_t toIndex(size_t x, size_t y) {
+  inline size_t toIndex(const size_t x, const size_t y) {
     return x + y * width_;
   }
 
-  inline void toCoordinate(size_t index, size_t &x, size_t &y) {
+  inline void toCoordinate(const size_t index, size_t &x, size_t &y) {
     x = index % width_;
     y = std::floor(index / width_);
+  }
+
+  inline void setStartPoint(const size_t x, const size_t y) {
+    
+    if (x > width_) {
+      return;
+    }
+
+    start_point_.x = x;
+    start_point_.y = y;
+  }
+
+  inline void setGoalPoint(const size_t x, const size_t y) {
+
+    if (x > width_) {
+      return;
+    }
+
+    goal_point_.x = x;
+    goal_point_.y = y;
   }
 
 protected:

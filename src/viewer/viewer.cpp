@@ -11,6 +11,14 @@ Viewer::Viewer(const size_t height, const size_t width, const size_t raster_size
   cv::setMouseCallback(board_name_, mouseHandler, (void*)&mouse_event_);		
 }
 
+void Viewer::setDijkstraPath(const Path &path) {
+  path_dijkstra_ = path;
+}
+
+void Viewer::setAStarPath(const Path &path) {
+  path_a_star_ = path;
+}
+
 void Viewer::drawText(cv::Mat &image) {
   cv::rectangle(image, cv::Rect(width_, 0, text_offset_, height_), cv::Scalar(50, 0, 20), -1);
   size_t x_offset = 20;
@@ -111,7 +119,7 @@ void Viewer::removeWall(const MouseEvent &mouse_event) {
   walls_.erase(index);
 }
 
-void Viewer::update(Path &path) {
+void Viewer::update() {
   cv::Mat field;
   board_.copyTo(field);
   MouseEvent mouse_event = getMouseEvent();
@@ -121,12 +129,13 @@ void Viewer::update(Path &path) {
   drawStartAndGoal(field);
   drawRaster(field);
   drawWalls(field);
-  drawPath(field, path);
+  drawPath(field, path_dijkstra_, cv::Scalar(0, 255, 0));
+  drawPath(field, path_a_star_, cv::Scalar(255, 0, 0));
 
   cv::imshow(board_name_, field);
 }
 
-void Viewer::drawPath(cv::Mat &image, Path &path) {
+void Viewer::drawPath(cv::Mat &image, Path &path, const cv::Scalar &color) {
 
   if (path.getSize()) {
     for(size_t index = 0; index < path.getSize() - 1; ++index) {
@@ -139,7 +148,7 @@ void Viewer::drawPath(cv::Mat &image, Path &path) {
       size_t index_x2 = point2.x * raster_size_ + offset;
       size_t index_y2 = point2.y * raster_size_ + offset;
 
-      cv::line(image, cv::Point(index_x1, index_y1), cv::Point(index_x2, index_y2), cv::Scalar(0, 255, 0), 3);
+      cv::line(image, cv::Point(index_x1, index_y1), cv::Point(index_x2, index_y2), color, 3);
     }
   }
 

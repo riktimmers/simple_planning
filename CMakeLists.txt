@@ -15,7 +15,7 @@ set(source
   "src/viewer/viewer.cpp"
   "src/planner/path.cpp"
   "src/planner/dijkstra.cpp"
-  
+  "src/planner/a_star.cpp"
 )
 
 add_executable(main ${source})

@@ -10,8 +10,6 @@ class Dijkstra : public BasePlanner {
 
 public:
   Dijkstra(const size_t height, const size_t width);
-  void setStartPoint(size_t x, size_t y);
-  void setGoalPoint(size_t x, size_t y);
   bool plan();
 };
 
