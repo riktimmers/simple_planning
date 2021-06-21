@@ -1,4 +1,5 @@
 #include "planner/dijkstra.h"
+#include <iostream>
 
 Dijkstra::Dijkstra(const size_t height, const size_t width) : BasePlanner(height, width) {
 }
@@ -31,7 +32,7 @@ bool Dijkstra::plan() {
     std::make_pair(1, 0),
     std::make_pair(0, -1) 
   };
-  
+
   while (!priority_queue.empty()) { // Keep going until priority queue is empty, or until goal is found (by breaking out)
     const size_t index = priority_queue.top().second; // Get the closest index value
     priority_queue.pop(); // Remove the item from priority_queue
@@ -71,7 +72,7 @@ bool Dijkstra::plan() {
             if (walls_.count(toIndex(current_x, current_y - 1)) || walls_.count(toIndex(current_x + 1, current_y - 1))) {
               continue;
             }
-        } // check if diagonal is wall as well 
+        } 
         
         distances.at(adjacent_index) = distances.at(index) + distance;
         priority_queue.emplace(std::make_pair(distances.at(adjacent_index), adjacent_index));
@@ -88,30 +89,12 @@ bool Dijkstra::plan() {
   }
 
   if (found_plan) {
-    std::vector<size_t> path;
-    path.reserve(previous.size());
-    size_t index = goal_index;
-
+    
     if (goal_index == start_index) { // When mouse hasn't moved, goal becomes 0 as well
       return false;
     }
-    
-    while(previous.at(index)  != start_index) {
-      path.push_back(index);
-      index = previous.at(index);
-    }
 
-    path.push_back(start_index);
-    std::reverse(path.begin(), path.end());
-
-    for(auto &index_path: path) {
-      size_t x, y;
-      toCoordinate(index_path, x, y);
-      Waypoint waypoint;
-      waypoint.x = x;
-      waypoint.y = y;
-      path_.addWaypoint(waypoint);
-    }
+    createPath(previous, start_index, goal_index);
 
     return true;
   }

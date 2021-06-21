@@ -20,7 +20,7 @@ bool AStar::plan() {
   unvisited_set.at(start_index) = false;
   distances.at(start_index) = 0;
 
-  float distance = std::sqrt(std::pow(start_point_.x - goal_point_.x, 2) + std::pow(start_point_.y - goal_point_.y, 2));
+  float distance = std::fabs(goal_point_.x - start_point_.x) + std::fabs(goal_point_.y - start_point_.y);
   priority_queue.emplace(std::make_pair(distance, start_index));
   bool found_plan = false;
 
@@ -34,6 +34,7 @@ bool AStar::plan() {
     std::make_pair(1, 0),
     std::make_pair(0, -1) 
   };
+
 
   while (!priority_queue.empty()) {
     const size_t index = priority_queue.top().second;
@@ -79,13 +80,10 @@ bool AStar::plan() {
 
         previous.at(adjacent_index) = index;
         distances.at(adjacent_index) = distances.at(index) + distance;
-        distance = distances.at(adjacent_index) + std::sqrt(std::pow(x - goal_point_.x, 2) + std::pow(y - goal_point_.y, 2)); 
         distance = distances.at(adjacent_index) + (std::fabs(goal_point_.x - x) + std::fabs(goal_point_.y - y));
         priority_queue.emplace(std::make_pair(distance, adjacent_index));
       }
     }
-
-    //unvisited_set.at(index) = false;
 
     if (index == goal_index) {
       found_plan = true;
@@ -94,31 +92,12 @@ bool AStar::plan() {
   }
  
   if (found_plan) {
-    std::vector<size_t> path;
-    path.reserve(previous.size());
-    size_t index = goal_index;
 
     if (goal_index == start_index) { // When mouse hasn't moved, goal becomes 0 as well
       return false;
     }
-    
-    while(previous.at(index)  != start_index) {
-      path.push_back(index);
-      index = previous.at(index);
-    }
 
-    path.push_back(start_index);
-    std::reverse(path.begin(), path.end());
-
-    for(auto &index_path: path) {
-      size_t x, y;
-      toCoordinate(index_path, x, y);
-      Waypoint waypoint;
-      waypoint.x = x;
-      waypoint.y = y;
-      path_.addWaypoint(waypoint);
-    }
-
+    createPath(previous, start_index, goal_index);
     return true;
   }
 

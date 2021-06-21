@@ -13,9 +13,9 @@ include_directories(
 set(source 
   "src/main.cpp"
   "src/viewer/viewer.cpp"
-  "src/planner/path.cpp"
   "src/planner/dijkstra.cpp"
   "src/planner/a_star.cpp"
+  "src/planner/base_planner.cpp"
 )
 
 add_executable(main ${source})

@@ -8,10 +8,7 @@
 class BasePlanner {
 
 public:
-  BasePlanner(const size_t height, const size_t width) :
-    height_(height),
-    width_(width) {
- };
+  BasePlanner(const size_t height, const size_t width);
 
   virtual bool plan() = 0;
 
@@ -59,6 +56,8 @@ public:
     goal_point_.x = x;
     goal_point_.y = y;
   }
+
+  void createPath(const std::vector<size_t> &path, const size_t start_index, const size_t goal_index);
 
 protected:
   Waypoint start_point_;
