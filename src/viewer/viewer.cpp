@@ -12,6 +12,7 @@ Viewer::Viewer(const size_t height, const size_t width, const size_t raster_size
   text_[3] = "- 'g' to set goal location";
   text_[4] = "- Green path: Dijkstra";
   text_[5] = "- Blue path: A*";
+  text_[6] = "- 'q' to Quit program";
 
   cv::namedWindow(board_name_);
   drawText(board_);

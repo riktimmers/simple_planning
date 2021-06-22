@@ -21,7 +21,7 @@ class Viewer {
   const std::string board_name_{"Planning Demo"};
   const size_t text_offset_{450};
 
-  std::array<std::string, 6> text_;
+  std::array<std::string, 7> text_;
   cv::Mat board_;
   MouseEvent mouse_event_;
   std::unordered_set<size_t> walls_;
