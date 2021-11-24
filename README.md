@@ -1,5 +1,5 @@
 # simple_planning
-Some simple GUI created with OpenCV that show of Dijkstra and A* planning algorithms. 
+Some simple GUI created with OpenCV that shows the Dijkstra and A* planning algorithms. 
 
 To build:
 ```
