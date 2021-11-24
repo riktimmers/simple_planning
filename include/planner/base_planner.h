@@ -20,7 +20,7 @@ public:
     return path_;
   }
 
-  inline void clear() {
+  inline void clear() { 
     path_.clear();
   }
 

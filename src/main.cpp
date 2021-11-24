@@ -3,18 +3,20 @@
 #include "planner/a_star.h"
 
 int main(int argc, char **argv) {
-  const size_t height = 800;
-  const size_t width = 800;
-  const size_t raster_width = 10;
+  const size_t height = 800; // Set height of the GUI
+  const size_t width = 800; // Set width of the GUI
+  const size_t raster_width = 10; // Set size of the squares
   
-  Viewer viewer(height, width, raster_width);
-  Dijkstra dijkstra(height/raster_width, width/raster_width);
-  AStar a_star(height/raster_width, width/raster_width);
+  Viewer viewer(height, width, raster_width); // Create the viewer
+  Dijkstra dijkstra(height/raster_width, width/raster_width); // Create Dijkstra planner
+  AStar a_star(height/raster_width, width/raster_width); // Create A* planner
 
-  const size_t start_x = 0;
-  const size_t start_y = 0;
-  const size_t goal_x = width - 1;
-  const size_t goal_y = height - 1;
+  const size_t start_x = 0; // Start x coordinate
+  const size_t start_y = 0; // Start y coordinate
+  const size_t goal_x = width - 1; // Goal x coordinate
+  const size_t goal_y = height - 1; // Goal y coordinate
+
+  // Set the start and goal positions for the planners and viewer.
   dijkstra.setStartPoint(start_x / raster_width, start_y / raster_width);
   a_star.setStartPoint(start_x / raster_width, start_y / raster_width);
   viewer.setStartPosition(start_x, start_y);
@@ -22,15 +24,17 @@ int main(int argc, char **argv) {
   a_star.setGoalPoint(goal_x / raster_width, goal_y / raster_width);
   viewer.setGoalPosition(goal_x, goal_y);
 
-   while (true) {
-    char key = cv::waitKey(1);
+   while (true) { // Endless loop.
+    char key = cv::waitKey(1); // Get key pressed.
+
+    // Update each planners with the new occupancy map (the walls).
     dijkstra.createOccupancyMap(viewer.getWalls());
     a_star.createOccupancyMap(viewer.getWalls());
-    bool found_plan = dijkstra.plan();
-    bool found_plan_a_star = a_star.plan();
+    bool found_plan_dijkstra = dijkstra.plan(); // Plan and determine if plan was found.
+    bool found_plan_a_star = a_star.plan(); // Plan and determine if plan was found.
 
-    
-    if (found_plan) {
+    // If path was found, give path to viewer.
+    if (found_plan_dijkstra) {
       viewer.setDijkstraPath(dijkstra.getPath());
     }
 
@@ -38,9 +42,9 @@ int main(int argc, char **argv) {
       viewer.setAStarPath(a_star.getPath());
     }
 
-    viewer.update();
+    viewer.update(); // Draw everything
 
-    if (key == 'q') {
+    if (key == 'q') { // Handle key presses.
       break;
     } else if (key == 's') {
       MouseEvent mouse_event = viewer.getMouseEvent();

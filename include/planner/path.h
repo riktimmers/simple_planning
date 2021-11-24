@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+
+// A Waypoint consist of the coordinate x, y.
 struct Waypoint {
   size_t x = 0;
   size_t y = 0;
@@ -14,13 +16,14 @@ struct Waypoint {
   Waypoint() {};
 };
 
+// Class that represents the path created by the planner.
 class Path {
   
   std::vector<Waypoint> path_;
 
 public:
-  Path(const size_t size = 1000) {
-    path_.reserve(size);
+  Path(const size_t size = 1000) { 
+    path_.reserve(size); // Reserve some space in the vector.
   }
 
   inline void addWaypoint(const Waypoint &waypoint) {

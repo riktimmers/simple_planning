@@ -6,6 +6,7 @@ Viewer::Viewer(const size_t height, const size_t width, const size_t raster_size
   raster_size_(raster_size),
   board_(height_, width_ + text_offset_, CV_8UC3, cv::Scalar(255, 255, 255)) {
 
+  // Text for program usage, printed on right side of the GUI.
   text_[0] = "- Left mouse button to add wall";
   text_[1] = "- Right mouse button to remove wall";
   text_[2] = "- 's' to set start location";
@@ -27,7 +28,7 @@ void Viewer::setAStarPath(const Path &path) {
   path_a_star_ = path;
 }
 
-void Viewer::drawText(cv::Mat &image) {
+void Viewer::drawText(cv::Mat &image) { // Draw the program instructions. 
   cv::rectangle(image, cv::Rect(width_, 0, text_offset_, height_), cv::Scalar(50, 0, 20), -1);
 
   for (size_t index = 0; index < text_.size(); ++index) {
@@ -46,12 +47,12 @@ void Viewer::addText(cv::Mat &image, const std::string text, const size_t line_n
 }
 
 bool Viewer::isWall(const size_t x, const size_t y) {
-  return walls_.count(getIndex(x, y)) > 0; 
+  return walls_.count(getIndex(x, y)) > 0;
 }
 
 void Viewer::setStartPosition(const size_t x, const size_t y) {
   
-  if (x > width_) {
+  if (x > width_) { // Check if not clicked outside of squares. 
     return;
   }
 
@@ -61,7 +62,7 @@ void Viewer::setStartPosition(const size_t x, const size_t y) {
 
 void Viewer::setGoalPosition(const size_t x, const size_t y) {
   
-  if (x > width_) {
+  if (x > width_) { // Check if not clicked outside of squares.
     return;
   }
 
@@ -74,14 +75,14 @@ void Viewer::drawStartAndGoal(cv::Mat &image) {
     const	size_t x = (start_index_ * raster_size_) % width_ ;
     const size_t y = std::floor((start_index_ / (width_/raster_size_)) * raster_size_);
 
-    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(220, 0, 0), -1);
+    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), start_color_, -1);
   }
 
   if (goal_set_) {
     const	size_t x = (goal_index_ * raster_size_) % width_ ;
     const size_t y = std::floor((goal_index_ / (width_/raster_size_)) * raster_size_);
 
-    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), cv::Scalar(0, 0, 255), -1);
+    cv::rectangle(image, cv::Rect(std::floor(x), std::floor(y), raster_size_, raster_size_), goal_color_, -1);
   }
 }
 
@@ -137,16 +138,16 @@ void Viewer::update() {
   drawStartAndGoal(field);
   drawRaster(field);
   drawWalls(field);
-  drawPath(field, path_dijkstra_, cv::Scalar(0, 255, 0));
-  drawPath(field, path_a_star_, cv::Scalar(255, 0, 0));
+  drawPath(field, path_dijkstra_, dijkstra_path_color_);
+  drawPath(field, path_a_star_, a_star_path_color_);
 
-  cv::imshow(board_name_, field);
+  cv::imshow(board_name_, field); // Show the image (GUI) that contains all the information.
 }
 
 void Viewer::drawPath(cv::Mat &image, Path &path, const cv::Scalar &color) {
 
   if (path.getSize()) {
-    for(size_t index = 0; index < path.getSize() - 1; ++index) {
+    for(size_t index = 0; index < path.getSize() - 1; ++index) { // Draw a line between two waypoints 
       Waypoint point1 = path.getWaypoint(index);
       Waypoint point2 = path.getWaypoint(index + 1);
 
@@ -162,7 +163,7 @@ void Viewer::drawPath(cv::Mat &image, Path &path, const cv::Scalar &color) {
 
 }
 
-void Viewer::drawRaster(cv::Mat &image) {
+void Viewer::drawRaster(cv::Mat &image) { // DRaw all the rasters, each square is a position (empty or wall)
   const cv::Scalar black(0, 0, 0); 
 
   for (size_t raster = raster_size_; raster <= width_; raster += raster_size_) {
@@ -187,6 +188,7 @@ MouseEvent Viewer::getMouseEvent() {
   return mouse_event_;
 }
 
+// Handle the mouse (position and button presses)
 void Viewer::mouseHandler(int event, int x,int y, int flags, void *mouse_event) {
   MouseEvent* mouse_event_ptr = (MouseEvent*)mouse_event;
   mouse_event_ptr->x = x;
