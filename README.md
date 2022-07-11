@@ -10,6 +10,6 @@ To run the program:
 ```
 $ ./main
 ```
-WIth the left mouse-button one can place a wall, with right mouse-button the wall is removed.
+With the left mouse-button one can place a wall, with right mouse-button the wall is removed.
 The starting location can be changed with 's' key and the goal location with 'g'. 
 Press 'q' to quit the program. 
