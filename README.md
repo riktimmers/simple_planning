@@ -3,7 +3,7 @@ Some simple GUI created with OpenCV that shows the Dijkstra and A* planning algo
 
 To build:
 ```
-$ mkdir -p build/Release ; cd build/Release ; cmake -DCMAKE_BUILD_TYPE=Release ../../ ; make -j5
+$ mkdir -p build ; cd build ; cmake -DCMAKE_BUILD_TYPE=Release ../ ; make -j5
 ```
 
 To run the program:
